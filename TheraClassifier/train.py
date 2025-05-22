@@ -5,6 +5,7 @@ Created on Thu May 22 14:20:49 2025
 
 @author: alfonso
 """
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -23,6 +24,15 @@ def train_model(image_dir, labels_csv):
         transforms.ToTensor()
     ])
 
+    #Check cuda
+    num_workers=6
+    device_id = 0     
+    cuda_list= [ 'cuda:0',
+                 'cuda:1',
+                 'cuda:2',
+                 'cuda:3'
+            ]
+        
     dataset = BinaryImageDataset(image_dir, labels_csv, transform)
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
@@ -31,8 +41,10 @@ def train_model(image_dir, labels_csv):
     for fold, (train_idx, val_idx) in enumerate(skf.split(dataset, labels)):
         print(f"Fold {fold}")
 
-        train_loader = DataLoader(Subset(dataset, train_idx), batch_size=32, shuffle=True)
-        val_loader = DataLoader(Subset(dataset, val_idx), batch_size=32)
+        train_loader = DataLoader(Subset(dataset, train_idx), batch_size=32, 
+                                  shuffle=True, num_workers=num_workers)
+        val_loader = DataLoader(Subset(dataset, val_idx), batch_size=32,
+                                num_workers=num_workers)
 
         model = SimpleCNN()
         model = model.cuda() if torch.cuda.is_available() else model
@@ -79,10 +91,10 @@ def train_model(image_dir, labels_csv):
             print(f"    Val   -> HTER: {metrics['HTER']:.4f}, FAR: {metrics['FAR']:.4f}, FRR: {metrics['FRR']:.4f}, "
                   f"Balanced Acc: {metrics['Balanced Accuracy']:.4f}, AUC: {metrics['AUC']:.4f}")
 
-        torch.save(model.state_dict(), f'models/fold_{fold}.pt')
+        torch.save(model.state_dict(),  os.path.join(os.path.dirname(image_dir),'models','fold_'+str(fold)+'.pt'))
         print(f"Model saved for fold {fold}")
 
 if __name__ == "__main__":
-    labels_file = '/Users/alfonso/Documents/Chamba/Therapanacea/Excercise/ml_exercise_therapanacea/label_train.txt'
-    imgs_ds     = '/Users/alfonso/Documents/Chamba/Therapanacea/Excercise/ml_exercise_therapanacea/train_img/'
+    labels_file = '/media/alfonso/data2/classifier/ml_exercise_therapanacea/label_train.txt'
+    imgs_ds     = '/media/alfonso/data2/classifier/ml_exercise_therapanacea/train_img'
     train_model(imgs_ds, labels_file)
