@@ -5,7 +5,6 @@ Created on Thu May 22 14:20:49 2025
 
 @author: alfonso
 """
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -33,7 +32,7 @@ def train_model(image_dir, labels_csv):
         print(f"Fold {fold}")
 
         train_loader = DataLoader(Subset(dataset, train_idx), batch_size=32, shuffle=True)
-        val_loader   = DataLoader(Subset(dataset, val_idx), batch_size=32)
+        val_loader = DataLoader(Subset(dataset, val_idx), batch_size=32)
 
         model = SimpleCNN()
         model = model.cuda() if torch.cuda.is_available() else model
@@ -41,7 +40,10 @@ def train_model(image_dir, labels_csv):
         criterion = nn.BCEWithLogitsLoss()
 
         for epoch in range(10):
+            print(f"  Epoch {epoch + 1}/10")
             model.train()
+            train_labels = []
+            train_probs = []
             for inputs, labels in train_loader:
                 inputs = inputs.cuda() if torch.cuda.is_available() else inputs
                 labels = labels.float().unsqueeze(1).cuda() if torch.cuda.is_available() else labels.float().unsqueeze(1)
@@ -50,6 +52,32 @@ def train_model(image_dir, labels_csv):
                 loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()
+                
+                with torch.no_grad():
+                    probs = torch.sigmoid(outputs).squeeze().cpu().numpy()
+                    train_probs.extend(probs.tolist())
+                    train_labels.extend(labels.squeeze().cpu().numpy().tolist())
+
+            train_metrics = compute_metrics(train_labels, train_probs)
+            print(f"    Train -> HTER: {train_metrics['HTER']:.4f}, FAR: {train_metrics['FAR']:.4f}, FRR: {train_metrics['FRR']:.4f}, "
+                  f"Balanced Acc: {train_metrics['Balanced Accuracy']:.4f}, AUC: {train_metrics['AUC']:.4f}")
+
+            # Validation after epoch
+            model.eval()
+            all_labels = []
+            all_probs = []
+            with torch.no_grad():
+                for inputs, labels in val_loader:
+                    inputs = inputs.cuda() if torch.cuda.is_available() else inputs
+                    labels = labels.cuda() if torch.cuda.is_available() else labels
+                    outputs = model(inputs)
+                    probs = torch.sigmoid(outputs).squeeze().cpu().numpy()
+                    all_probs.extend(probs.tolist())
+                    all_labels.extend(labels.cpu().numpy().tolist())
+
+            metrics = compute_metrics(all_labels, all_probs)
+            print(f"    Val   -> HTER: {metrics['HTER']:.4f}, FAR: {metrics['FAR']:.4f}, FRR: {metrics['FRR']:.4f}, "
+                  f"Balanced Acc: {metrics['Balanced Accuracy']:.4f}, AUC: {metrics['AUC']:.4f}")
 
         torch.save(model.state_dict(), f'models/fold_{fold}.pt')
         print(f"Model saved for fold {fold}")
