@@ -22,6 +22,7 @@ def main():
     args = parser.parse_args()
     
     if args.mode == 'explore':
+        parser.add_argument('--labels_txt', type=str, required=False)
         data_explore(args.image_dir, args.labels_txt)
     elif args.mode == 'train':
         train_model(args.image_dir, args.labels_txt)

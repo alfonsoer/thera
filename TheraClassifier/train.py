@@ -13,14 +13,20 @@ from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import DataLoader, Subset
 from torchvision import transforms
 from model import SimpleCNN
-from dataset import BinaryImageDataset
+from dataset import TrainDataset
 from utils import compute_metrics
 import os
+import copy as cp
 
-
-def train_model(image_dir, labels_csv):
+def train_model(image_dir, labels_csv, epochs=10, lr=0.001):
     transform = transforms.Compose([
         transforms.Resize((64, 64)),
+        transforms.ToTensor()
+    ])
+
+    train_transform = transforms.Compose([
+        transforms.Resize((64, 64)),
+        transforms.RandomAffine(0,translate=(0.015,0.015)),
         transforms.ToTensor()
     ])
 
@@ -32,27 +38,40 @@ def train_model(image_dir, labels_csv):
                  'cuda:2',
                  'cuda:3'
             ]
-        
-    dataset = BinaryImageDataset(image_dir, labels_csv, transform)
+    
+    #Read the dataset
+    dataset     = TrainDataset(image_dir, labels_csv, transform=transform, 
+                               train_transform=None, stage='')
+
+    #Dataset splitting into K=5 stratified folds
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
     labels = [label for _, label in dataset]
 
     for fold, (train_idx, val_idx) in enumerate(skf.split(dataset, labels)):
         print(f"Fold {fold}")
-
-        train_loader = DataLoader(Subset(dataset, train_idx), batch_size=32, 
+        #For each fold evaluate on training and validation subsets        
+        tr_subset  = cp.copy(dataset)
+        val_subset = cp.copy(dataset)
+        tr_subset.subset(train_idx) 
+        val_subset.subset(val_idx) 
+        #Append extra tranformations to training data
+        tr_subset.appendTrainTransform(train_transform)
+        
+        train_loader = DataLoader(tr_subset, batch_size=32, 
                                   shuffle=True, num_workers=num_workers)
-        val_loader = DataLoader(Subset(dataset, val_idx), batch_size=32,
+        val_loader = DataLoader(val_subset, batch_size=32,
                                 num_workers=num_workers)
-
+        #Model setup
         model = SimpleCNN()
         model = model.cuda() if torch.cuda.is_available() else model
-        optimizer = optim.Adam(model.parameters(), lr=0.001)
+        #Using Adam optimizer
+        optimizer = optim.Adam(model.parameters(), lr=lr)
+        #And a binary cross entropy loss function to minimize
         criterion = nn.BCEWithLogitsLoss()
 
-        for epoch in range(10):
-            print(f"  Epoch {epoch + 1}/10")
+        for epoch in range(epochs):
+            print(f"  Epoch {epoch + 1}/{epochs}")
             model.train()
             train_labels = []
             train_probs = []
@@ -97,4 +116,4 @@ def train_model(image_dir, labels_csv):
 if __name__ == "__main__":
     labels_file = '/media/alfonso/data2/classifier/ml_exercise_therapanacea/label_train.txt'
     imgs_ds     = '/media/alfonso/data2/classifier/ml_exercise_therapanacea/train_img'
-    train_model(imgs_ds, labels_file)
+    train_model(imgs_ds, labels_file, epochs=12,lr=0.001)

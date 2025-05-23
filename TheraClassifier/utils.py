@@ -6,7 +6,8 @@ Created on Thu May 22 14:29:32 2025
 @author: alfonso
 """
 
-from sklearn.metrics import confusion_matrix, roc_auc_score, balanced_accuracy_score
+from sklearn.metrics import confusion_matrix, roc_auc_score
+from sklearn.metrics import balanced_accuracy_score
 import numpy as np
 
 def compute_metrics(y_true, y_pred_probs, threshold=0.5):

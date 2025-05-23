@@ -9,9 +9,9 @@ Created on Thu May 22 11:03:16 2025
 import os
 import pandas as pd
 from PIL import Image
-import imagesize
+from dataset import TrainDataset
 
-#Utility to get imaga size withouth loading the image
+#Utility to get image size withouth loading the image
 def get_image_size(path):
     with Image.open(path) as img:
         return img.size  # (width, height)
@@ -23,26 +23,14 @@ def concatenate_images(im1, im2):
     dst.paste(im2, (im1.width, 0))
     return dst
 
-def data_explore(images_dir, labels_file, show_images=False):    
-    # labels_file = '/Users/alfonso/Documents/Chamba/Therapanacea/Excercise/ml_exercise_therapanacea/label_train.txt'
-    # imgs_ds     = '/Users/alfonso/Documents/Chamba/Therapanacea/Excercise/ml_exercise_therapanacea/train_img/'
-    #Read labels file
-    
-    dataset          = pd.read_csv(labels_file,header=None, names=['cohort'])
-    #Create a pd column with image files. File names are formatted accordingly
-    files = []
-    K='0'
-    for r in range(1,dataset.cohort.size+1): 
-        file = str(r)
-        N = len(str(dataset.cohort.size))-len(file)
-        file=K*N+file+'.jpg'
-        files.append(file)
-    dataset ['filename'] = files
+def data_explore(images_dir, labels_file, show_images=False, files_consistency=False):    
+    dataset = TrainDataset(images_dir,labels_file)
+
     #Here I've used the dataframe to manually inspect the image and the class it belongs to. 
     #I discovered the classifier task is to classify between persons having or not attributes like
     #hats, glasses, cap, etc
-    pos_imgs=dataset[dataset['cohort']==1]['filename'].reset_index(drop=True)
-    neg_imgs=dataset[dataset['cohort']==0]['filename'].reset_index(drop=True)
+    pos_imgs=dataset.df[dataset.df['cohort']==1]['filename'].reset_index(drop=True)
+    neg_imgs=dataset.df[dataset.df['cohort']==0]['filename'].reset_index(drop=True)
     
     if show_images:
         nim=0
@@ -57,14 +45,15 @@ def data_explore(images_dir, labels_file, show_images=False):
     
     #Verify files consistency
     existing_files = [f for f in os.listdir(images_dir) if '.jpg' in f]
-    # missing_files = []
-    # for f in files:
-    #     if f not in existing_files:
-    #         missing_files.append(f)
-    # if len(missing_files)>0:
-    #     print('Check  missing files', missing_files)
-    # else:
-    #     print('Consistency test passed')
+    if files_consistency:
+        missing_files = []
+        for f in dataset.image_paths:
+            if f not in existing_files:
+                missing_files.append(f)
+        if len(missing_files)>0:
+            print('Check  missing files', missing_files)
+        else:
+            print('Consistency test passed')
 
     #Get image original resolution
     res = []
@@ -75,17 +64,17 @@ def data_explore(images_dir, labels_file, show_images=False):
         
     
     #Then count classes to check if data is well balanced
-    counts = dataset.groupby('cohort') 
-    p_class_0 = 100*len(counts.groups[0])/len(dataset)
-    p_class_1 = 100*len(counts.groups[1])/len(dataset)
+    counts = dataset.df.groupby('cohort') 
+    p_class_0 = 100*len(counts.groups[0])/len(dataset.df)
+    p_class_1 = 100*len(counts.groups[1])/len(dataset.df)
     
     print(counts.count())
     print("Percentages: class 0: ", p_class_0, " % class 1: ", p_class_1, " %")
     if p_class_0<30 or p_class_1<30:
         print('Data is strongly imbalanced')
     
-
+    
 if __name__ == "__main__":
-    labels_file = '/Users/alfonso/Documents/Chamba/Therapanacea/Excercise/ml_exercise_therapanacea/label_train.txt'
-    imgs_ds     = '/Users/alfonso/Documents/Chamba/Therapanacea/Excercise/ml_exercise_therapanacea/train_img/'
-    data_explore(imgs_ds, labels_file)
+    labels_file = '/media/alfonso/data2/classifier/ml_exercise_therapanacea/label_train.txt'
+    imgs_ds     = '/media/alfonso/data2/classifier/ml_exercise_therapanacea/train_img'
+    data_explore(imgs_ds, labels_file,show_images=True, files_consistency=True)
