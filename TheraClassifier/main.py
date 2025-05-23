@@ -15,25 +15,35 @@ from test import test_model
 def main():
     #Parser arguments to run main from command line
     parser = argparse.ArgumentParser(description="Binary image classifier")
-    parser.add_argument('--mode', choices=['explore','train', 'validate', 'test'], required=True)
+    parser.add_argument('--mode', choices=['explore','train', 'test'], required=True)
     parser.add_argument('--image_dir', type=str, required=True)
     parser.add_argument('--labels_txt', type=str, required=False)
     parser.add_argument('--model_dir', type=str, required=False)
+    parser.add_argument('--epochs', type=int, required=False)
+    parser.add_argument('--lr', type=str, required=False)
+    
+    
     args = parser.parse_args()
     
     if args.mode == 'explore':
-        parser.add_argument('--labels_txt', type=str, required=False)
+        if not args.labels_txt:
+            raise ValueError("Required --labels_txt for data exploration.")
         data_explore(args.image_dir, args.labels_txt)
     elif args.mode == 'train':
-        train_model(args.image_dir, args.labels_txt)
-    # elif args.mode == 'validate':
-    #     if not args.model_dir:
-    #         raise ValueError("Required --model_dir for validation.")
-    #     validate_model(args.image_dir, args.labels_txt, args.model_dir)
-    # elif args.mode == 'test':
-    #     if not args.model_dir:
-    #         raise ValueError("Required --model_dir for test.")
-    #     test_model(args.image_dir, args.model_dir)
+        if not args.labels_txt:
+            raise ValueError("Required --labels_txt for training.")  
+        epochs = 12
+        lr=0.001
+        
+        if args.epochs:
+            epochs=int( args.epochs)
+        if args.lr:
+            lr=float( args.lr)            
+        train_model(args.image_dir, args.labels_txt, epochs=epochs,lr=lr )
+    elif args.mode == 'test':
+        if not args.model_dir:
+            raise ValueError("Required --model_dir for test.")
+        test_model(args.image_dir, args.model_dir)
 
 if __name__ == '__main__':
     main()

@@ -32,7 +32,7 @@ def test_model(image_dir, model_dir):
     for i in range(5):
         model_path = os.path.join(model_dir, f'fold_{i}.pt')
         model = SimpleCNN().to(device)
-        model.load_state_dict(torch.load(model_path, map_location=device))
+        model.load_state_dict(torch.load(model_path, map_location=device, weights_only=True))
         model.eval()
 
         preds = []
@@ -47,5 +47,4 @@ def test_model(image_dir, model_dir):
     final_preds = majority_vote(fold_preds)
 
     df = pd.DataFrame({'filename': image_names, 'prediction': final_preds})
-    df.to_csv("test_predictions_majority_voting.csv", index=False)
-    print("✅ Predicciones guardadas en test_predictions_majority_voting.csv")
+    df.to_csv(os.path.join(os.path.dirname(image_dir),"test_predictions_majority_voting.csv"), index=False)

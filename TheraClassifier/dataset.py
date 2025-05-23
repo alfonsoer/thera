@@ -33,6 +33,9 @@ class TrainDataset(Dataset):
             file=K*N+file+'.jpg'
             files.append(file)
         self.df ['filename'] = files        
+        #debug slice dataframe
+        self.df = self.df[:1000]
+        
         self.image_paths = self.df['filename'].tolist()
         self.labels = self.df['cohort'].tolist()
 

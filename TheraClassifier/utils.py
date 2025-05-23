@@ -9,6 +9,9 @@ Created on Thu May 22 14:29:32 2025
 from sklearn.metrics import confusion_matrix, roc_auc_score
 from sklearn.metrics import balanced_accuracy_score
 import numpy as np
+import matplotlib.pyplot as plt
+import os
+
 
 def compute_metrics(y_true, y_pred_probs, threshold=0.5):
     y_pred = (np.array(y_pred_probs) >= threshold).astype(int)
@@ -25,3 +28,16 @@ def compute_metrics(y_true, y_pred_probs, threshold=0.5):
         'Balanced Accuracy': bal_acc,
         'AUC': auc
     }
+
+def plot_metrics(train_metrics_df, val_metrics_df,  fold, log_dir, metric='loss'):
+        plt.figure()
+        plt.plot(train_metrics_df[metric].tolist(), label='Train '+metric)
+        plt.plot(val_metrics_df[metric].tolist(), label='Validation '+metric)
+        plt.xlabel('Epoch')
+        plt.ylabel(metric)
+        plt.title(f'{metric} for fold {fold}')
+        plt.legend()
+        plt.savefig(os.path.join(log_dir, f'{metric}_fold_{fold}.pdf'))
+        plt.close()
+        
+ 
