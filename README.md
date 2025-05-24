@@ -16,3 +16,7 @@ I've quckly checked the images and the labels. I've tried to elucidate what feat
 # Stage 2 
 I'm going to count the samples each class has. Check for imbalanced classes ... 
 # Stage 3
+
+#How to execute
+## Data exploration
+python main.py --mode=explore --image_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --img_test_dir='/home/sagemaker-user/val_img'
