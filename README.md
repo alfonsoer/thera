@@ -22,3 +22,5 @@ I'm going to count the samples each class has. Check for imbalanced classes ...
 python main.py --mode=explore --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --img_test_dir='/home/sagemaker-user/val_img'
 ## CNN training
 python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --epochs=15 --lr=0.001 --step=5 --gamma=0.7 --save_dir='/home/sagemaker-user/thera/results'
+## CNN testing
+python main.py --mode=test --img_test_dir='/home/sagemaker-user/val_img/' --model_dir='/home/sagemaker-user/thera/results/models'
