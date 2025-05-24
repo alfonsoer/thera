@@ -50,10 +50,10 @@ python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --l
 python main.py --mode=test --img_test_dir='/home/sagemaker-user/val_img' --model_dir='/home/sagemaker-user/thera/results/models'
 ```
 
-#Appendix
+# Appendix
 ## Training plots for each fold.
 
 ## N-classifiers predictions and majority vote
 
-#Off-topic
+# Off-topic
 Since my personal laptop can't handle ML model training (I used to use a 4-GPU server at the lab), I initially thought about using Google Colab. However, I’m not too fond of launching code in chunks—at least not unless I’m in debugging mode. So I later switched to Amazon SageMaker and created a JupyterLab environment with a 16 GB GPU and a 4-core CPU. The interface for writing and running scripts is very simple, user-friendly, and runs smoothly. I really enjoyed setting up my AWS SageMaker environment.
