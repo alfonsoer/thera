@@ -23,14 +23,15 @@ def main():
     parser.add_argument('--lr', type=str, required=False)
     parser.add_argument('--step', type=int, required=False)
     parser.add_argument('--gamma', type=str, required=False)
-
+    parser.add_argument('--save_dir', type=str, required=False)
+    args = parser.parse_args()
+    
     #Default training parameters
     epochs = 12
     lr=0.001
     step_size=5
     gamma=0.7
-
-    args = parser.parse_args()
+    save_dir = ''
     
     if args.mode == 'explore':
         if not args.labels_txt:
@@ -48,9 +49,10 @@ def main():
             step_size=int( args.step)
         if args.gamma:
             gamma=float( args.gamma)   
-        
+        if args.save_dir:
+            save_dir=args.save_dir
         train_model(args.image_dir, args.labels_txt, 
-                    epochs=epochs, lr=lr,step_size=step_size,gamma=gamma  )
+                    epochs=epochs, lr=lr,step_size=step_size,gamma=gamma,save_dir=save_dir  )
     elif args.mode == 'test':
         if not args.model_dir:
             raise ValueError("Required --model_dir for test.")
