@@ -11,8 +11,9 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import StepLR
 from torchvision import transforms
-from model import SimpleCNN, 
+from model import SimpleCNN, SimpleCNNBN,SimpleCNNBNDr, ResNetBinary
 from dataset import TrainDataset
 from utils import compute_metrics, plot_metrics
 import os
@@ -20,18 +21,26 @@ import copy as cp
 import pandas as pd
 
 def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
-                step_size=5, gamma=0.7, save_dir='', cnn_type='basic'):
+                step_size=5, gamma=0.7, save_dir='', cnn_type='baseline',
+               SEED= 10000, scheduler_str='StepLR', input_size=(64,64)):
+    if cnn_type=='resnet':
+        input_size = (254,254)
     transform = transforms.Compose([
-        transforms.Resize((64, 64)),
+        transforms.Resize(input_size),
         transforms.ToTensor()
     ])
 
     train_transform = transforms.Compose([
-        transforms.Resize((64, 64)),
-        transforms.RandomAffine(0,translate=(0.015,0.015)),
+        transforms.Resize(input_size),
+        transforms.RandomAffine(0,translate=(0.05,0.05)),
+        #Images present always a portrait of the person,   
+        #there is no need to rotate more than -5 to 5 degrees 
+        transforms.RandomRotation(degrees=(-5, 5)),
         transforms.ToTensor()
     ])
-
+    
+    #Create output dir, log_dir and model_dir
+    os.makedirs(save_dir, exist_ok=True)
     log_dir = os.path.join(save_dir, 'logs')
     model_dir = os.path.join(save_dir, 'models')
     os.makedirs(log_dir, exist_ok=True)
@@ -39,8 +48,12 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
     
     #Check GPU disponibility
     move_to_gpu = False
+    torch.manual_seed(SEED)
     if torch.cuda.is_available():
-        move_to_gpu=True    
+        move_to_gpu=True  
+        torch.cuda.empty_cache()  
+        torch.cuda.manual_seed(SEED) 
+        
                     
     #Useful when having mutiple GPUs
     device_id = 0     
@@ -50,14 +63,15 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
                  'cuda:3'
             ]
     #Number of threads for the dataloader to read data simultaneously 
-    num_workers=2
+    num_workers=8
     
     #Read the dataset
     dataset     = TrainDataset(image_dir, labels_csv, transform=transform, 
                                train_transform=None, stage='')
     labels = [label for _, label in dataset]
 
-    #Dataset splitting into K=5 stratified folds
+    #Dataset splitting into K=5 stratified folds,
+    #assuring samples of the minority class are taken into account
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
     for fold, (train_idx, val_idx) in enumerate(skf.split(dataset, labels)):
@@ -68,25 +82,39 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         tr_subset.subset(train_idx) 
         val_subset.subset(val_idx)
         
-        #Append extra tranformations to training data
-        tr_subset.appendTrainTransform(train_transform)
-        
+        #Modify tranformations to training data
+        tr_subset.modifyTransform(train_transform)
+
+        #Dataloaders for reading training and validation samples
         train_loader = DataLoader(tr_subset, batch_size=32, 
                                   shuffle=True, num_workers=num_workers)
         val_loader = DataLoader(val_subset, batch_size=32,
                                 num_workers=num_workers)
         #Model setup. 
-        model = SimpleCNN()
+        model = None
+        if cnn_type=='baseline':
+            model = SimpleCNN()
+        elif cnn_type=='BNbaseline':
+            model = SimpleCNNBN()
+        elif cnn_type=='BNbaselineDr':
+            model = SimpleCNNBNDr()
+        elif cnn_type=='resnet':
+            model = ResNetBinary()
+
+        if model is None:
+            raise Exception("Can't continue due to undefined training model.")            
+ 
         #Verify GPU availability. This is also done for the inputs as well as for the labels
         model = model.cuda() if move_to_gpu else model
         #Using Adam optimizer
-        optimizer = optim.Adam(model.parameters(), lr=lr)s
+        optimizer = optim.Adam(model.parameters(), lr=lr)
         #And a binary cross entropy loss function to minimize
         criterion = nn.BCEWithLogitsLoss()
         #I will set an scheduler to control the learning rate
         scheduler = None
         if scheduler_str == 'StepLR':
             scheduler = StepLR(optimizer, step_size=step_size, gamma=gamma) 
+        
         history = {'train_metrics': [],  'val_metrics': []}
         for epoch in range(epochs):
             lr_start = optimizer.state_dict()['param_groups'][0]['lr']
@@ -153,7 +181,11 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         # Plot HTER and loss 
         plot_metrics(train_metrics_df, val_metrics_df, fold, log_dir, metric='HTER')
         plot_metrics(train_metrics_df, val_metrics_df, fold, log_dir, metric='loss')
-        
+        plot_metrics(train_metrics_df, val_metrics_df, fold, log_dir, metric='Balanced Accuracy')
+
+        #Free GPU memory
+        if move_to_gpu:
+            torch.cuda.empty_cache()    
 
         
 if __name__ == "__main__":
