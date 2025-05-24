@@ -31,9 +31,11 @@ There are  20000  images for testing
 After performing data exploration I've discovered the classifier task is to classify between persons having or not attributes like hats, glasses, cap, etc
 There exist several pre-trained models for attributes classification like this, https://github.com/Hawaii0821/FaceAttr-Analysis/tree/master, however I've decided to go in my own and to train a model from zero with a very simple architechture. Indeed, another factor for choosing a classifier is the application. But in this case, the exercice does not give more details. 
 # My approach
-## 1. Generate a prediction on the validation images based on the mojority vote of N classifiers. 
-## 2. Train N classifiers based on N-folds or subsets. Thus, splitting the DS into N stratified folds to assure samples of the minority class are considered.
-## 3. Each classifier will be based on the same CNN trained on each different fold. In this case I have chosen a very simple architechture including batch normalization and dropouts to help reduce overfitting. For data augmentation I have chosen to only inlcude some random shifts and rotation, no more than 10 degrees since images have always a portrait of the person.
+### 1. Generate predictions on the validation images based on the majority vote of N classifiers.
+
+### 2. Train N classifiers using N-fold cross-validation or subsets. This involves splitting the dataset into N stratified folds to ensure that samples from the minority class are properly represented.
+
+### 3. Each classifier is based on the same CNN architecture, trained on a different fold. In this case, I have chosen a very simple architecture that includes batch normalization and dropout layers to help reduce overfitting. For data augmentation, I included only slight random shifts and rotations (no more than 10 degrees), since the images consistently depict a portrait of the person.
 
 # How to execute the code ?
 ## Data exploration
