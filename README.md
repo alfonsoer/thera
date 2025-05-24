@@ -28,8 +28,7 @@ Exploring testing dataset
 There are  20000  images for testing
 ```
 # Stage 3
-After performing data exploration I've discovered the classifier task is to classify between persons having or not attributes like hats, glasses, cap, etc
-There exist several pre-trained models for attributes classification like this, https://github.com/Hawaii0821/FaceAttr-Analysis/tree/master, however I've decided to go in my own and to train a model from zero with a very simple architechture. Indeed, another factor for choosing a classifier is the application. But in this case, the exercice does not give more details. 
+After performing data exploration, I discovered that the classification task involves distinguishing between people based on attributes such as hats, glasses, caps, etc. There are several pre-trained models available for attribute classification [(e.g., FaceAttr-Analysis)](https://github.com/Hawaii0821/FaceAttr-Analysis/tree/master). However, I decided to take my own approach and train a model from scratch using a very simple architecture. Indeed, another factor to consider when choosing a classifier is the specific application. But in this case, the exercise does not provide further details like the maximum HTER expected on the training set.
 # My approach
 ### 1. Generate predictions on the validation images based on the majority vote of N classifiers.
 
