@@ -21,8 +21,15 @@ def main():
     parser.add_argument('--model_dir', type=str, required=False)
     parser.add_argument('--epochs', type=int, required=False)
     parser.add_argument('--lr', type=str, required=False)
-    
-    
+    parser.add_argument('--step', type=int, required=False)
+    parser.add_argument('--gamma', type=str, required=False)
+
+    #Default training parameters
+    epochs = 12
+    lr=0.001
+    step_size=5
+    gamma=0.7
+
     args = parser.parse_args()
     
     if args.mode == 'explore':
@@ -32,14 +39,18 @@ def main():
     elif args.mode == 'train':
         if not args.labels_txt:
             raise ValueError("Required --labels_txt for training.")  
-        epochs = 12
-        lr=0.001
-        
+
         if args.epochs:
             epochs=int( args.epochs)
         if args.lr:
-            lr=float( args.lr)            
-        train_model(args.image_dir, args.labels_txt, epochs=epochs,lr=lr )
+            lr=float( args.lr)   
+        if args.step:
+            step_size=int( args.step)
+        if args.gamma:
+            gamma=float( args.gamma)   
+        
+        train_model(args.image_dir, args.labels_txt, 
+                    epochs=epochs, lr=lr,step_size=step_size,gamma=gamma  )
     elif args.mode == 'test':
         if not args.model_dir:
             raise ValueError("Required --model_dir for test.")
