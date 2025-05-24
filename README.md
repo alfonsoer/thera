@@ -34,7 +34,7 @@ After performing data exploration, I discovered that the classification task inv
 
 ### 2. Train N classifiers using N-fold cross-validation or subsets. This involves splitting the dataset into N stratified folds to ensure that samples from the minority class are properly represented.
 
-### 3. Each classifier is based on the same CNN architecture, trained on a different fold. In this case, I have chosen a very simple architecture that includes batch normalization and dropout layers to help reduce overfitting. For data augmentation, I included only slight random shifts and rotations (no more than 10 degrees), since the images consistently depict a portrait of the person.
+### 3. Each classifier is based on the same CNN architecture, trained on a different fold. In this case, I have chosen a very simple architecture that includes batch normalization and dropout layers to help reduce overfitting. For data augmentation, I included only slight random shifts and rotations (no more than 5 degrees), since the images consistently depict a portrait of the person.
 
 # How to execute the code ?
 ## Data exploration
