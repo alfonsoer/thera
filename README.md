@@ -41,9 +41,13 @@ After performing data exploration, I discovered that the classification task inv
 
 # Results
 ### Results with a simple architecture
+In summary the architecture is composed of sucesive convolutional + batchnorm + relu + dropout layers. The number and size of the kernels are given bellow:
 ```
-conv_layer_widths = [[(16,3)],[(32,3),(32,3)], [(64,3),(64,3)], [(128,3),(128,3)]] 
+conv_layer_widths = [[(16,3)],[(32,3),(32,3)], [(64,3),(64,3)], [(128,3),(128,3)]]
 linear_layer_widths = [64,128, 1]
+```
+The training parameters were:
+```
     epochs = 50
     lr=1e-4
     step_size=20
@@ -52,7 +56,10 @@ linear_layer_widths = [64,128, 1]
     dropout 2D and 1D = 0.25
     wrs = True #Weighted random sampler ON with replacement ON
 ```
-![image](https://github.com/user-attachments/assets/7033122f-a5ad-4e03-a8ac-f31eec41bacd)
+The performance of the method evaluated by crossvalidation on 5 validation folds is shown in Figure 1.
+![Results](https://github.com/user-attachments/assets/8f921480-dfaa-4797-9c06-6642545d7b37)
+<h4 align="center">Figure 1</h1>
+
 ### Results with ResNet with pretrained weights 
 ```
 
