@@ -31,11 +31,12 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
     ])
 
     train_transform = transforms.Compose([
-        transforms.Resize(input_size),
+        #transforms.Resize(input_size),
         transforms.RandomAffine(0,translate=(0.05,0.05)),
         #Images present always a portrait of the person,   
         #there is no need to rotate more than -5 to 5 degrees 
         transforms.RandomRotation(degrees=(-5, 5)),
+        transforms.Resize(input_size),
         transforms.ToTensor()
     ])
     
@@ -118,7 +119,7 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         history = {'train_metrics': [],  'val_metrics': []}
         for epoch in range(epochs):
             lr_start = optimizer.state_dict()['param_groups'][0]['lr']
-            print(f"  Epoch {epoch + 1}/{epochs}, lr={lr_start}")
+            print(f"  Epoch {epoch + 1}/{epochs}, lr={lr_start}:.8f")
             #Model mode as training
             model.train()
             train_labels = []
