@@ -11,7 +11,7 @@ from data_exploration import data_explore
 from train import train_model
 from validate import validate_model
 from test import test_model
-
+# File main for data exploration, training and testing launching
 def main():
     #Parser arguments to run main from command line
     parser = argparse.ArgumentParser(description="Binary image classifier")
@@ -32,9 +32,10 @@ def main():
     lr=0.001
     step_size=5
     gamma=0.7
-    batch_size = 64
+    batch_size = 32
     save_dir = ''
-    
+    #cnn_type='resnet'
+    cnn_type='vbdSimpleCnn'
     if args.mode == 'explore':
         if not args.img_train_dir:
             raise ValueError("Required --img_train_dir for data exploration.")            
@@ -61,13 +62,13 @@ def main():
             save_dir=args.save_dir
         train_model(args.img_train_dir, args.labels_txt, 
                     epochs=epochs, lr=lr,step_size=step_size,gamma=gamma,
-                    save_dir=save_dir, cnn_type='resnet', batch_size=batch_size)
+                    save_dir=save_dir, cnn_type=cnn_type, batch_size=batch_size)
     elif args.mode == 'test':
         if not args.model_dir:
             raise ValueError("Required --model_dir for testing.")
         if not args.img_test_dir:
             raise ValueError("Required --img_test_dir for testing.")
-        test_model(args.img_test_dir, args.model_dir, cnn_type='resnet')
+        test_model(args.img_test_dir, args.model_dir, cnn_type=cnn_type)
 
 if __name__ == '__main__':
     main()

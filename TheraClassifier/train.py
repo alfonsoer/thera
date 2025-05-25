@@ -13,27 +13,32 @@ from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import StepLR
 from torchvision import transforms
-from model import SimpleCNN, SimpleCNNBN,SimpleCNNBNDr, ResNetBinary
+from model import  ResNetBinary
+from VBD_model import vbdSimpleCnn
 from dataset import TrainDataset
+from mysampler import get_sampler
 from utils import compute_metrics, plot_metrics
 import os
 import copy as cp
 import pandas as pd
 import torch.nn.functional as F
 
+
+
 def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
                 step_size=5, gamma=0.7, save_dir='', cnn_type='baseline',
                SEED= 10000, scheduler_str='StepLR', input_size=(64,64),     
-               batch_size =32):
+               input_channels=3, batch_size =32, num_clases=2):
     if cnn_type=='resnet':
         input_size = (254,254)
+        
     transform = transforms.Compose([
-        #transforms.Resize(input_size), #To improve resizing at loading time, I will interpolate the entire batch in tensor form on gpu.
+        #transforms.Resize(input_size),#To improve resizing at loading time, I will interpolate the entire batch in tensor form on gpu. #In some cases it may be unsafe to do this because of different image sizes
         transforms.ToTensor()
     ])
 
     train_transform = transforms.Compose([
-        #transforms.Resize(input_size),
+         
         transforms.RandomAffine(0,translate=(0.05,0.05)),
         #Images present always a portrait of the person,   
         #there is no need to rotate more than -5 to 5 degrees 
@@ -86,22 +91,26 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         
         #Modify tranformations to training data
         tr_subset.modifyTransform(train_transform)
-
+        sampler=None
+        shuffle=False
+        sampler = get_sampler(tr_subset,num_clases, batch_size)
+        if sampler is None:
+            shuffle=True
         #Dataloaders for reading training and validation samples
         train_loader = DataLoader(tr_subset, batch_size=batch_size, 
-                                  shuffle=True, num_workers=num_workers)
+                                  shuffle=shuffle, num_workers=num_workers, sampler=sampler)
         val_loader = DataLoader(val_subset, batch_size=batch_size,
                                 num_workers=num_workers)
         #Model setup. 
         model = None
-        if cnn_type=='baseline':
-            model = SimpleCNN()
-        elif cnn_type=='BNbaseline':
-            model = SimpleCNNBN()
-        elif cnn_type=='BNbaselineDr':
-            model = SimpleCNNBNDr()
-        elif cnn_type=='resnet':
+        if cnn_type=='resnet':
             model = ResNetBinary()
+        elif cnn_type=='vbdSimpleCnn':
+            conv_layer_widths = [[(16,3)],[(32,3),(32,3)], [(64,3),(64,3)], [(128,3),(128,3)]] 
+            linear_layer_widths = [64,128, 1] 
+            model = vbdSimpleCnn(torch.Size(input_size),input_channels,
+                                 conv_layer_widths,linear_layer_widths,
+                                 prob=0.25,use_bn=True)
 
         if model is None:
             raise Exception("Can't continue due to undefined training model.")            
@@ -120,7 +129,7 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         history = {'train_metrics': [],  'val_metrics': []}
         for epoch in range(epochs):
             lr_start = optimizer.state_dict()['param_groups'][0]['lr']
-            print(f"  Epoch {epoch + 1}/{epochs}, lr={lr_start:.8f}")
+            print(f"  Epoch {epoch + 1}/{epochs}, lr={lr_start:.6f}")
             #Model mode as training
             model.train()
             train_labels = []
