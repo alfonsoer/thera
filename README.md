@@ -184,7 +184,7 @@ python main.py --mode=explore --img_train_dir='/home/sagemaker-user/train_img' -
 ```
 ## CNN training
 ```
-python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --epochs=15 --lr=0.001 --step=5 --gamma=0.7 --save_dir='/home/sagemaker-user/thera/results'
+python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --epochs=50 --lr=1e-4 --step=20 --gamma=0.7 --save_dir='/home/sagemaker-user/thera/results_vbd_wrs_lr1e-4_50_epochs'
 ```
 ## CNN testing
 ```
