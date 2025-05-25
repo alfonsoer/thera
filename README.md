@@ -34,14 +34,29 @@ After performing data exploration, I discovered that the classification task inv
 ### 2. Train N classifiers using N-fold cross-validation or subsets. This involves splitting the dataset into N stratified folds to ensure that samples from the minority class are properly represented.
 ### 3. Each classifier is based on the same CNN architecture, trained on a different fold
 ### 4. Choose a very simple architecture that includes batch normalization and dropout layers to help reduce overfitting. The performance will be used as a baseline. 
-### 5. For data augmentation, I included only slight random shifts and rotations (no more than 5 degrees), since the images consistently depict a portrait of the person.
+### 5. For data augmentation, I've included only slight random shifts and rotations (no more than 5 degrees), since the images consistently depict a portrait of the person.
 ### 6. Repeat the experiment using ResNet with pretrained weights on ImageNet and remove the last layer to adapt the output. The input should be also adapted to handle 64x64 images. 
 ### 7. Choose the architechture that gives better results.
+### 8. Repeat the experiment adding a Weighted Random Sampler, to also ensure that samples from the minority class are properly represented in each batch
 
 # Results
 ### Results with a simple architecture
-
+```
+conv_layer_widths = [[(16,3)],[(32,3),(32,3)], [(64,3),(64,3)], [(128,3),(128,3)]] 
+linear_layer_widths = [64,128, 1]
+    epochs = 50
+    lr=1e-4
+    step_size=20
+    gamma=0.7
+    batch_size = 32
+    dropout 2D and 1D = 0.25
+    wrs = True #Weighted random sampler ON with replacement ON
+```
+![image](https://github.com/user-attachments/assets/7033122f-a5ad-4e03-a8ac-f31eec41bacd)
 ### Results with ResNet with pretrained weights 
+```
+
+```
 
 # How to execute the code ?
 ## Data exploration
@@ -50,7 +65,7 @@ python main.py --mode=explore --img_train_dir='/home/sagemaker-user/train_img' -
 ```
 ## CNN training
 ```
-python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --epochs=15 --lr=0.001 --step=5 --gamma=0.7 --save_dir='/home/sagemaker-user/thera/results'
+python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --epochs=50 --lr=1e-4 --step=20 --gamma=0.7 --save_dir='/home/sagemaker-user/thera/results_vbd_wrs_lr1e-4_50_epochs'
 ```
 ## CNN testing
 ```
