@@ -14,6 +14,7 @@ from dataset import get_test_dataloader
 from torchvision import transforms
 from collections import Counter
 import pandas as pd
+import torch.nn.functional as F
 
 #Calculate the mojority vote from all classifiers
 def majority_vote(predictions_list):

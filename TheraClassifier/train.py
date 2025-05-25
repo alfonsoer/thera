@@ -38,7 +38,7 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         #Images present always a portrait of the person,   
         #there is no need to rotate more than -5 to 5 degrees 
         transforms.RandomRotation(degrees=(-5, 5)),
-        #transforms.Resize(input_size),  #To improve resizing at loading time, I will interpolate the entire batch in tensor form on gpu.
+        #transforms.Resize(input_size),  #To improve resizing at loading time, I will interpolate the entire batch in tensor form on gpu. #In some cases it may be unsafe to do this because of different image sizes
         transforms.ToTensor()
     ])
     
