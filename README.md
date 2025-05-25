@@ -81,7 +81,7 @@ python main.py --mode=test --img_test_dir='/home/sagemaker-user/val_img' --model
 
 # Appendix
 ## N-classifiers predictions and majority vote
-Interestingly all indivividual classifiers performed similarly :)
+Interestingly all indivividual classifiers performed similarly :) See the full table here : [(N-predictions table)](https://github.com/alfonsoer/thera/blob/main/test_predictions_majority_voting.csv)
 | filename   	| pred_1 	| pred_2 	| pred_3 	| pred_4 	| pred_5 	| prediction 	|
 |------------	|--------	|--------	|--------	|--------	|--------	|------------	|
 | 000001.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
