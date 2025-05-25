@@ -78,9 +78,9 @@ class TestDataset(torch.utils.data.Dataset):
         image = self.transform(image)
         return image
 
-def get_test_dataloader(images_dir, transform, batch_size=32):
+def get_test_dataloader(images_dir, transform, batch_size=32,num_workers=8):
     dataset = TestDataset(images_dir, transform)
     image_names = dataset.image_names
     #Dataloaders for reading testing samples
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     return dataloader, image_names

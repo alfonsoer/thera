@@ -19,14 +19,16 @@ from utils import compute_metrics, plot_metrics
 import os
 import copy as cp
 import pandas as pd
+import torch.nn.functional as F
 
 def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
                 step_size=5, gamma=0.7, save_dir='', cnn_type='baseline',
-               SEED= 10000, scheduler_str='StepLR', input_size=(64,64)):
+               SEED= 10000, scheduler_str='StepLR', input_size=(64,64),     
+               batch_size =32):
     if cnn_type=='resnet':
         input_size = (254,254)
     transform = transforms.Compose([
-        transforms.Resize(input_size),
+        #transforms.Resize(input_size), #To improve resizing at loading time, I will interpolate the entire batch in tensor form on gpu.
         transforms.ToTensor()
     ])
 
@@ -36,7 +38,7 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         #Images present always a portrait of the person,   
         #there is no need to rotate more than -5 to 5 degrees 
         transforms.RandomRotation(degrees=(-5, 5)),
-        transforms.Resize(input_size),
+        #transforms.Resize(input_size),  #To improve resizing at loading time, I will interpolate the entire batch in tensor form on gpu.
         transforms.ToTensor()
     ])
     
@@ -65,7 +67,6 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
             ]
     #Number of threads for the dataloader to read data simultaneously 
     num_workers=8
-    
     #Read the dataset
     dataset     = TrainDataset(image_dir, labels_csv, transform=transform, 
                                train_transform=None, stage='')
@@ -87,9 +88,9 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         tr_subset.modifyTransform(train_transform)
 
         #Dataloaders for reading training and validation samples
-        train_loader = DataLoader(tr_subset, batch_size=32, 
+        train_loader = DataLoader(tr_subset, batch_size=batch_size, 
                                   shuffle=True, num_workers=num_workers)
-        val_loader = DataLoader(val_subset, batch_size=32,
+        val_loader = DataLoader(val_subset, batch_size=batch_size,
                                 num_workers=num_workers)
         #Model setup. 
         model = None
@@ -119,7 +120,7 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
         history = {'train_metrics': [],  'val_metrics': []}
         for epoch in range(epochs):
             lr_start = optimizer.state_dict()['param_groups'][0]['lr']
-            print(f"  Epoch {epoch + 1}/{epochs}, lr={lr_start}:.8f")
+            print(f"  Epoch {epoch + 1}/{epochs}, lr={lr_start:.8f}")
             #Model mode as training
             model.train()
             train_labels = []
@@ -127,6 +128,8 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
             epoch_loss = 0.0
             for inputs, labels in train_loader:
                 inputs = inputs.cuda() if move_to_gpu else inputs
+                #Interpolate the entire batch
+                inputs = F.interpolate(inputs, input_size)
                 labels = labels.float().unsqueeze(1).cuda() if move_to_gpu else labels.float().unsqueeze(1)
                 optimizer.zero_grad() #Gradients init before each evaluation
                 outputs = model(inputs)
@@ -157,6 +160,8 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
             with torch.no_grad(): #Reduce memory use by disabling gradient calculation
                 for inputs, labels in val_loader:
                     inputs = inputs.cuda() if move_to_gpu else inputs
+                    #Interpolate the entire batch
+                    inputs = F.interpolate(inputs, input_size)
                     labels = labels.cuda() if move_to_gpu else labels
                     outputs = model(inputs)
                     probs = torch.sigmoid(outputs).squeeze().cpu().numpy()

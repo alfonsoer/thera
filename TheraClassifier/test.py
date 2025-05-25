@@ -27,7 +27,7 @@ def test_model(image_dir, model_dir, Nfolds=5, cnn_type='baseline', input_size=(
         input_size = (254,254)
         
     transform = transforms.Compose([
-        transforms.Resize(input_size),
+        #transforms.Resize(input_size), #To improve resizing at loading time, I will interpolate it in tensor form on gpu.
         transforms.ToTensor()
     ])
 
@@ -59,6 +59,7 @@ def test_model(image_dir, model_dir, Nfolds=5, cnn_type='baseline', input_size=(
             #Calculate predictions
             for inputs in test_loader:
                 inputs = inputs.to(device)
+                inputs = F.interpolate(inputs, input_size)
                 outputs = model(inputs)
                 probs = torch.sigmoid(outputs).cpu().numpy().flatten()
                 preds.extend((probs >= 0.5).astype(int))

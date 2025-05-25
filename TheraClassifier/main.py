@@ -32,6 +32,7 @@ def main():
     lr=0.001
     step_size=5
     gamma=0.7
+    batch_size = 64
     save_dir = ''
     
     if args.mode == 'explore':
@@ -48,7 +49,6 @@ def main():
             raise ValueError("Required --img_train_dir for training.") 
         if not args.labels_txt:
             raise ValueError("Required --labels_txt for training.")  
-
         if args.epochs:
             epochs=int( args.epochs)
         if args.lr:
@@ -61,13 +61,13 @@ def main():
             save_dir=args.save_dir
         train_model(args.img_train_dir, args.labels_txt, 
                     epochs=epochs, lr=lr,step_size=step_size,gamma=gamma,
-                    save_dir=save_dir, cnn_type='resnet')
+                    save_dir=save_dir, cnn_type='resnet', batch_size=batch_size)
     elif args.mode == 'test':
         if not args.model_dir:
             raise ValueError("Required --model_dir for testing.")
         if not args.img_test_dir:
             raise ValueError("Required --img_test_dir for testing.")
-        test_model(args.img_test_dir, args.model_dir, cnn_type=='resnet')
+        test_model(args.img_test_dir, args.model_dir, cnn_type='resnet')
 
 if __name__ == '__main__':
     main()
