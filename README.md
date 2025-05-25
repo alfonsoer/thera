@@ -81,7 +81,38 @@ python main.py --mode=test --img_test_dir='/home/sagemaker-user/val_img' --model
 
 # Appendix
 ## N-classifiers predictions and majority vote
-
+Interestingly all indivividual classifiers performed similarly :)
+| filename   	| pred_1 	| pred_2 	| pred_3 	| pred_4 	| pred_5 	| prediction 	|
+|------------	|--------	|--------	|--------	|--------	|--------	|------------	|
+| 000001.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000002.jpg 	| 0      	| 0      	| 0      	| 0      	| 0      	| 0          	|
+| 000003.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000004.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000005.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000006.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000007.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000008.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000009.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000010.jpg 	| 0      	| 0      	| 0      	| 0      	| 0      	| 0          	|
+| 000011.jpg 	| 0      	| 0      	| 0      	| 0      	| 0      	| 0          	|
+| 000012.jpg 	| 1      	| 0      	| 1      	| 1      	| 1      	| 1          	|
+| 000013.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000014.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000015.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000016.jpg 	| 0      	| 0      	| 0      	| 0      	| 0      	| 0          	|
+| 000017.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000018.jpg 	| 0      	| 0      	| 0      	| 0      	| 0      	| 0          	|
+| 000019.jpg 	| 0      	| 0      	| 0      	| 0      	| 0      	| 0          	|
+| 000020.jpg 	| 0      	| 0      	| 0      	| 0      	| 0      	| 0          	|
+| 000021.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000022.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000023.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000024.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000025.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000026.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000027.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000028.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
+| 000029.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
 
 # Off-topic
 Since my personal laptop can't handle ML model training (I used to use a 4-GPU server at the lab), I initially thought about using Google Colab. However, I'm not very enthusiastic of launching code in chunks—at least not unless I’m in debugging mode besides the fact that data transfer took an eternity. So I later switched to Amazon SageMaker and created a JupyterLab environment with a 16 GB GPU and a 4-core CPU. The interface for writing and running scripts is very simple, user-friendly, and runs smoothly. I really enjoyed setting up my AWS SageMaker environment.
