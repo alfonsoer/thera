@@ -17,13 +17,12 @@ class ResNetBinary(nn.Module):
         
         # Replace final fc layer with  num_classes
         self.model.fc = nn.Sequential(
-                            nn.Dropout(0.25),
-                            nn.Linear(self.model.fc.in_features, num_classes),
+                            nn.Linear(self.model.fc.in_features, 128),
                             #Add extra linear layers
-                            #nn.BatchNorm1d(128),
-                            #nn.ReLU(),
-                            #nn.Dropout(0.2),
-                            #nn.Linear(128, num_classes)
+                            nn.BatchNorm1d(128),
+                            nn.ReLU(),
+                            nn.Dropout(0.2),
+                            nn.Linear(128, num_classes)
                             )
         
     def forward(self, x):
