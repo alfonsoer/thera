@@ -62,7 +62,9 @@ The performance of the method evaluated by crossvalidation on 5 validation folds
 
 ### Results with ResNet with pretrained weights 
 ```
-
+Do to hardware constrains I could not finish testing a pre-trained resnet. The only results I got didn't use weighted random sampling, reaching a BA in the order of 85%. In general the learning behaviour using this pre-trained renest-18 is more stable accross epochs.
+![image](https://github.com/user-attachments/assets/4fd1f394-b152-4b9e-87b7-659fd99b7bd9)
+![image](https://github.com/user-attachments/assets/5db4108f-5aa0-4fb2-b10e-c5e7ebb299fd)
 ```
 
 # How to execute the code ?
