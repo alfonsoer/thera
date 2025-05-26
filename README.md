@@ -35,7 +35,8 @@ There are  20000  images for testing
 ### Stage 3
 
 After performing data exploration, I discovered that the classification task involves distinguishing between people based on attributes such as hats, glasses, caps, etc. There are several pre-trained models available for attribute classification [(e.g., FaceAttr-Analysis)](https://github.com/Hawaii0821/FaceAttr-Analysis/tree/master) on the CelebA dataset. However, I decided to take my own approach and train a model from scratch using a very simple architecture. Indeed, another factor to consider when choosing a classifier is the specific application. But in this case, the exercise does not provide further details like a typical HTER expected on the training set.
-# My approach
+## Method
+
 ### 1. Generate predictions on the validation images based on the majority vote of N classifiers.
 ### 2. Train N classifiers using N-fold cross-validation. This involves splitting the dataset into N stratified folds to ensure that samples from the minority class are properly represented in each subset.
 ### 3. Each classifier is based on the same CNN architecture, trained on a different fold.
@@ -45,7 +46,7 @@ After performing data exploration, I discovered that the classification task inv
 ### 7. Choose the architechture that gives better results.
 ### 8. Repeat the experiment adding a Weighted Random Sampler, to also ensure that samples from the minority class are properly represented in each batch
 
-# Results
+## Results
 ### Results with a simple architecture
 In summary the architecture is composed of sucesive convolutional + batchnorm + relu + dropout layers. The number and size of the kernels are given bellow:
 ```
@@ -73,18 +74,18 @@ Due to hardware constrains I could not finish testing the pre-trained resnet. Th
 
 ![image](https://github.com/user-attachments/assets/57ea0fec-4e06-459e-a9ee-83958fd7c706)
 
-# How to execute the code ?
-## Data exploration
+## How to execute the code ?
+### Data exploration
 To explore the data content use a command as the following. 
 ```
 python main.py --mode=explore --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --img_test_dir='/home/sagemaker-user/val_img'
 ```
-## CNN training
+### CNN training
 For tranining, there are some custom parameters we can pass, such as epochs, learning rate, etc as well as the destination folder. Models are saved into the destination path under a folder 'models'. The log folder organizes training-validation plots and stores the metrics history.
 ```
 python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --epochs=50 --lr=1e-4 --step=20 --gamma=0.7 --save_dir='/home/sagemaker-user/thera/results_vbd_wrs_lr1e-4_50_epochs'
 ```
-## CNN testing
+### CNN testing
 Testing requires the testing path of the data and the model's path. Recall all models are saved into a folder named 'models' which is inside the destination's path that was indicated when training. The label_val.txt file is generated in the same directory level as val_img.
 ```
 python main.py --mode=test --img_test_dir='/home/sagemaker-user/val_img' --model_dir='/home/sagemaker-user/thera/results/models'
