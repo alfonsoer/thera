@@ -11,9 +11,14 @@ notebook).
 Note that there is no need to send back the images.
 You will be noted not only on the test labels but also on the quality of your code.
 
-# Stage 1 
+# Deliverables
+The code can be found here: [(Theraclassifier)](https://github.com/alfonsoer/thera/tree/main/TheraClassifier) and output file label_val.txt file that is generated in the same directory level as val_img is here [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt)
+
+# Procedure
+## Data exploration
+### Stage 1
 I've quckly checked the images and the labels. I've tried to elucidate what features are taken into account from the images to tye to chose the best suitable classifier. So first impression: it isn't a genre classification problem. 
-# Stage 2 
+### Stage 2 
 I'm going to count the samples each class has. Check for imbalanced classes ... 
 ```text
 > python main.py --mode=explore --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --img_test_dir='/home/sagemaker-user/val_img'
@@ -27,7 +32,8 @@ Data is strongly imbalanced
 Exploring testing dataset
 There are  20000  images for testing
 ```
-# Stage 3
+### Stage 3
+
 After performing data exploration, I discovered that the classification task involves distinguishing between people based on attributes such as hats, glasses, caps, etc. There are several pre-trained models available for attribute classification [(e.g., FaceAttr-Analysis)](https://github.com/Hawaii0821/FaceAttr-Analysis/tree/master) on the CelebA dataset. However, I decided to take my own approach and train a model from scratch using a very simple architecture. Indeed, another factor to consider when choosing a classifier is the specific application. But in this case, the exercise does not provide further details like a typical HTER expected on the training set.
 # My approach
 ### 1. Generate predictions on the validation images based on the majority vote of N classifiers.
