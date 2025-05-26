@@ -12,7 +12,7 @@ Note that there is no need to send back the images.
 You will be noted not only on the test labels but also on the quality of your code.
 
 # Deliverables
-The code can be found here: [(Theraclassifier)](https://github.com/alfonsoer/thera/tree/main/TheraClassifier) and the output label_val.txt file that is generated in the same directory level as val_img is here [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt). You may also want to know  [(how to execute the code)](https://github.com/alfonsoer/thera/edit/main/README.md#how-to-execute-the-code-)
+The code can be found here: [Theraclassifier](https://github.com/alfonsoer/thera/tree/main/TheraClassifier) and the output label_val.txt file that is generated in the same directory level as val_img is here [label_val.txt](https://github.com/alfonsoer/thera/blob/main/label_val.txt). You may also want to know  [how to execute the code](https://github.com/alfonsoer/thera/edit/main/README.md#how-to-execute-the-code-)
 
 # Procedure
 ## Data exploration
@@ -66,7 +66,7 @@ The performance of the method evaluated by crossvalidation on 5 validation folds
 ![Results](https://github.com/user-attachments/assets/8f921480-dfaa-4797-9c06-6642545d7b37)
 <h4 align="center">Figure 1</h1>
 
-The label_val.txt validation file is generated in the same directory level as val_img. [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt)
+The label_val.txt validation file is generated in the same directory level as val_img. [label_val.txt](https://github.com/alfonsoer/thera/blob/main/label_val.txt)
 
 ### Results with ResNet with pretrained weights 
 Due to hardware constraints, I was not able to complete testing of the pre-trained ResNet-18. The only results I obtained did not use weighted random sampling (WRS), reaching a balanced accuracy of around 85%. I am fairly confident that the results could improve by incorporating WRS during batch training.
@@ -96,7 +96,7 @@ python main.py --mode=test --img_test_dir='/home/sagemaker-user/val_img' --model
 
 # Appendix
 ## N-classifiers predictions and majority vote
-Interestingly all indivividual classifiers performed similarly :) See the full table here : [(N-predictions table)](https://github.com/alfonsoer/thera/blob/main/test_predictions_majority_voting.csv)
+Interestingly all indivividual classifiers performed similarly :) See the full table here : [N-predictions table](https://github.com/alfonsoer/thera/blob/main/test_predictions_majority_voting.csv)
 | filename   	| pred_1 	| pred_2 	| pred_3 	| pred_4 	| pred_5 	| prediction 	|
 |------------	|--------	|--------	|--------	|--------	|--------	|------------	|
 | 000001.jpg 	| 1      	| 1      	| 1      	| 1      	| 1      	| 1          	|
