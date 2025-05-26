@@ -12,7 +12,7 @@ Note that there is no need to send back the images.
 You will be noted not only on the test labels but also on the quality of your code.
 
 # Deliverables
-The code can be found here: [Theraclassifier](https://github.com/alfonsoer/thera/tree/main/TheraClassifier) and the output label_val.txt file that is generated in the same directory level as val_img is here [label_val.txt](https://github.com/alfonsoer/thera/blob/main/label_val.txt). You may also want to know  [how to execute the code](https://github.com/alfonsoer/thera/edit/main/README.md#how-to-execute-the-code-)
+The code can be found here: [Theraclassifier](https://github.com/alfonsoer/thera/tree/main/TheraClassifier) and the output label_val.txt file that is generated in the same directory level as val_img is here [label_val.txt](https://github.com/alfonsoer/thera/blob/main/label_val.txt). You may also want to know  [how to execute the code](https://github.com/alfonsoer/thera/edit/main/README.md#how-to-execute-the-code-)?
 
 # Procedure
 ## Data exploration
