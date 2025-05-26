@@ -36,15 +36,14 @@ There are  20000  images for testing
 
 After performing data exploration, I discovered that the classification task involves distinguishing between people based on attributes such as hats, glasses, caps, etc. There are several pre-trained models available for attribute classification [(e.g., FaceAttr-Analysis)](https://github.com/Hawaii0821/FaceAttr-Analysis/tree/master) on the CelebA dataset. However, I decided to take my own approach and train a model from scratch using a very simple architecture. Indeed, another factor to consider when choosing a classifier is the specific application. But in this case, the exercise does not provide further details like a typical HTER expected on the training set.
 ## Method
-
-### 1. Generate predictions on the validation images based on the majority vote of N classifiers.
-### 2. Train N classifiers using N-fold cross-validation. This involves splitting the dataset into N stratified folds to ensure that samples from the minority class are properly represented in each subset.
-### 3. Each classifier is based on the same CNN architecture, trained on a different fold.
-### 4. Choose a very simple architecture that includes batch normalization and also add dropout layers to help reduce overfitting. The performance will be used as a baseline. 
-### 5. For data augmentation, I've included only slight random shifts and rotations (no more than 5 degrees), since the images consistently depict a portrait of the person.
-### 6. Repeat the experiment using ResNet with pretrained weights on ImageNet and remove the last layer to adapt the output. The input should be also adapted to handle 64x64 images. 
-### 7. Choose the architechture that gives better results.
-### 8. Repeat the experiment adding a Weighted Random Sampler, to also ensure that samples from the minority class are properly represented in each batch
+1. Generate predictions on the validation images based on the majority vote of N classifiers.
+2. Train N classifiers using N-fold cross-validation. This involves splitting the dataset into N stratified folds to ensure that samples from the minority class are properly represented in each subset.
+3. Each classifier is based on the same CNN architecture, trained on a different fold.
+4. Choose a very simple architecture that includes batch normalization and also add dropout layers to help reduce overfitting. The performance will be used as a baseline.
+5. For data augmentation, I've included only slight random shifts and rotations (no more than 5 degrees), since the images consistently depict a portrait of the person.
+6. Repeat the experiment using ResNet with pretrained weights on ImageNet and remove the last layer to adapt the output. The input should be also adapted to handle 64x64 images.
+7. Choose the architechture that gives better results.
+8. Repeat the experiment adding a Weighted Random Sampler, to also ensure that samples from the minority class are properly represented in each batch
 
 ## Results
 ### Results with a simple architecture
