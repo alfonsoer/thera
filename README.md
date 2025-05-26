@@ -59,7 +59,9 @@ The training parameters were:
 The performance of the method evaluated by crossvalidation on 5 validation folds is shown in Figure 1.
 ![Results](https://github.com/user-attachments/assets/8f921480-dfaa-4797-9c06-6642545d7b37)
 <h4 align="center">Figure 1</h1>
-The label_val.txt validation file is generated in the same directory level as val_img. [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt) 
+
+The label_val.txt validation file is generated in the same directory level as val_img. [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt)
+
 ### Results with ResNet with pretrained weights 
 Due to hardware constrains I could not finish testing the pre-trained resnet. The only results I got didn't use weighted random sampling, reaching a BA in the order of 85%. In general the learning behaviour using this pre-trained renest-18 is more stable accross epochs than the simple CNN I've used before. Pending to finish testing.
 ![image](https://github.com/user-attachments/assets/57ea0fec-4e06-459e-a9ee-83958fd7c706)
@@ -76,7 +78,7 @@ For tranining, there are some custom parameters we can pass, such as epochs, lea
 python main.py --mode=train --img_train_dir='/home/sagemaker-user/train_img' --labels_txt='/home/sagemaker-user/label_train.txt' --epochs=50 --lr=1e-4 --step=20 --gamma=0.7 --save_dir='/home/sagemaker-user/thera/results_vbd_wrs_lr1e-4_50_epochs'
 ```
 ## CNN testing
-Testing requires the testing path of the data and the model's path. Recall al models are saved into the destination path under a folder 'models'. The label_val.txt file is generated in the same directory level as val_img.
+Testing requires the testing path of the data and the model's path. Recall all models are saved into a folder named 'models' which is inside the destination's path that was indicated when training. The label_val.txt file is generated in the same directory level as val_img.
 ```
 python main.py --mode=test --img_test_dir='/home/sagemaker-user/val_img' --model_dir='/home/sagemaker-user/thera/results/models'
 ```
