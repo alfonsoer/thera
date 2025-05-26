@@ -43,7 +43,7 @@ After performing data exploration, I discovered that the classification task inv
 5. For data augmentation, I've included only slight random shifts and rotations (no more than 5 degrees), since the images consistently depict a portrait of the person.
 6. Repeat the experiment using ResNet with pretrained weights on ImageNet and remove the last layer to adapt the output. The input should be also adapted to handle 64x64 images.
 7. Choose the architechture that gives better results.
-8. Repeat the experiment adding a Weighted Random Sampler, to also ensure that samples from the minority class are properly represented in each batch
+8. Repeat the experiment adding a Weighted Random Sampler, to also ensure that samples from the minority class are properly represented in each batch.
 
 ## Results
 ### Results with a simple architecture
