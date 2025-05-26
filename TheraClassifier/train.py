@@ -24,21 +24,22 @@ import pandas as pd
 import torch.nn.functional as F
 
 
-
+#Method that launchs the CNN training and testing. It splits the data into K folds. In this case it is set to 5.
+#Several parameters can be passed such as the epochs, the learning rate, etc.
 def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
                 step_size=5, gamma=0.7, save_dir='', cnn_type='baseline',
                SEED= 10000, scheduler_str='StepLR', input_size=(64,64),     
                input_channels=3, batch_size =32, num_clases=2):
     if cnn_type=='resnet':
         input_size = (254,254)
-        
+      
+    # Transformations that we need to do to each input image right after loading it.
     transform = transforms.Compose([
         #transforms.Resize(input_size),#To improve resizing at loading time, I will interpolate the entire batch in tensor form on gpu. #In some cases it may be unsafe to do this because of different image sizes
         transforms.ToTensor()
     ])
 
     train_transform = transforms.Compose([
-         
         transforms.RandomAffine(0,translate=(0.05,0.05)),
         #Images present always a portrait of the person,   
         #there is no need to rotate more than -5 to 5 degrees 
@@ -81,6 +82,7 @@ def train_model(image_dir, labels_csv, epochs=10, lr=0.001,
     #assuring samples of the minority class are taken into account
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
+    #Iteration over each fold
     for fold, (train_idx, val_idx) in enumerate(skf.split(dataset, labels)):
         print(f"Fold {fold}")
         #For each fold evaluate on training and validation subsets        
