@@ -63,7 +63,8 @@ The performance of the method evaluated by crossvalidation on 5 validation folds
 The label_val.txt validation file is generated in the same directory level as val_img. [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt)
 
 ### Results with ResNet with pretrained weights 
-Due to hardware constrains I could not finish testing the pre-trained resnet. The only results I got didn't use weighted random sampling, reaching a BA in the order of 85%. In general the learning behaviour using this pre-trained renest-18 is more stable accross epochs than the simple CNN I've used before. Pending to finish testing.
+Due to hardware constrains I could not finish testing the pre-trained resnet. The only results I got didn't use weighted random sampling, reaching a BA in the order of 85%. I am pretty sure the results could improve by adding the WRS when training each batch. In general the learning behaviour using this pre-trained renest-18 is more stable accross epochs than the simple CNN I've used before. Pending to finish testing resnet-18 with WRS.
+
 ![image](https://github.com/user-attachments/assets/57ea0fec-4e06-459e-a9ee-83958fd7c706)
 
 # How to execute the code ?
