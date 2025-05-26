@@ -12,7 +12,7 @@ Note that there is no need to send back the images.
 You will be noted not only on the test labels but also on the quality of your code.
 
 # Deliverables
-The code can be found here: [(Theraclassifier)](https://github.com/alfonsoer/thera/tree/main/TheraClassifier) and the output label_val.txt file that is generated in the same directory level as val_img is here [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt)
+The code can be found here: [(Theraclassifier)](https://github.com/alfonsoer/thera/tree/main/TheraClassifier) and the output label_val.txt file that is generated in the same directory level as val_img is here [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt). You may also want to know  [(how to execute the code)](https://github.com/alfonsoer/thera/edit/main/README.md#how-to-execute-the-code-)
 
 # Procedure
 ## Data exploration
@@ -69,7 +69,11 @@ The performance of the method evaluated by crossvalidation on 5 validation folds
 The label_val.txt validation file is generated in the same directory level as val_img. [(label_val.txt)](https://github.com/alfonsoer/thera/blob/main/label_val.txt)
 
 ### Results with ResNet with pretrained weights 
-Due to hardware constrains I could not finish testing the pre-trained resnet. The only results I got didn't use weighted random sampling, reaching a BA in the order of 85%. I am pretty sure the results could improve by adding the WRS when training each batch. In general the learning behaviour using this pre-trained renest-18 is more stable accross epochs than the simple CNN I've used before. Pending to finish testing resnet-18 with WRS.
+Due to hardware constraints, I was not able to complete testing of the pre-trained ResNet-18. The only results I obtained did not use weighted random sampling (WRS), reaching a balanced accuracy of around 85%. I am fairly confident that the results could improve by incorporating WRS during batch training.
+
+Overall, the learning behavior using this pre-trained ResNet-18 is more stable across epochs compared to the simple CNN I used previously.
+
+Testing ResNet-18 with WRS remains pending
 
 ![image](https://github.com/user-attachments/assets/57ea0fec-4e06-459e-a9ee-83958fd7c706)
 
